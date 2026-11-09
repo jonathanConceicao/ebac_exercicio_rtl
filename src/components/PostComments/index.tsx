@@ -1,27 +1,24 @@
-import { FormEvent, useState } from 'react';
+// src/components/PostComments/index.tsx
+import { useState, FormEvent } from 'react';
 import styles from './PostComments.module.css';
 
-import Comment from '../../models/Comment';
-
-const Post = () => {
-    const [comments, setComments] = useState<Comment[]>([]);
+const PostComments = () => {
+    const [comments, setComments] = useState<string[]>([]);
     const [tempComment, setTempComment] = useState('');
 
     function handleAddComment(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        const newComment = new Comment(comments.length, tempComment);
+        if (!tempComment.trim()) return;
+        setComments([...comments, tempComment]);
         setTempComment('');
-        setComments([...comments, newComment]);
     }
 
     return (
         <div>
             <ul className={styles['post-comments']}>
-                {comments.map(({ comment, id }) => (
-                    <li className={styles['post-comment']} key={id}>
-                        <p className={styles['post-comment-content']}>
-                            {comment}
-                        </p>
+                {comments.map((comment, index) => (
+                    <li key={index} className={styles['post-comment']}>
+                        {comment}
                     </li>
                 ))}
             </ul>
@@ -30,20 +27,19 @@ const Post = () => {
                     data-testid="campo-comentario"
                     value={tempComment} 
                     onChange={e => setTempComment(e.target.value)} 
-                    required 
-                    className={styles['post-comments-form-textarea']} 
+                    className={styles['post-comments-textarea']}
+                    placeholder="Comente aqui..."
                 />
-                
                 <button 
-                    type="submit" 
                     data-testid="botao-enviar-comentario"
-                    className={styles['post-comments-form-button']}
+                    type="submit" 
+                    className={styles['post-comments-button']}
                 >
                     Comentar
                 </button>
             </form>
         </div>
     );
-}
+};
 
-export default Post;
+export default PostComments;
